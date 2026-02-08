@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthchievements - Level Up Your Health!</title>
+
+    <!-- Google Fonts - Gaming style fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== CSS VARIABLES (like game settings!) ===== */
+        /* These are reusable color/font values we can use anywhere */
+        :root {
+            --primary: #7c3aed;       /* Purple - our main color */
+            --primary-light: #a78bfa;  /* Lighter purple */
+            --secondary: #10b981;      /* Green - for "health/go" things */
+            --accent: #f59e0b;         /* Gold - for achievements/XP */
+            --danger: #ef4444;         /* Red - for warnings */
+            --bg-dark: #0f172a;        /* Dark background */
+            --bg-card: #1e293b;        /* Card background */
+            --bg-card-hover: #334155;  /* Card hover state */
+            --text-light: #f1f5f9;     /* Light text */
+            --text-muted: #94a3b8;     /* Grey/muted text */
+            --font-pixel: 'Press Start 2P', cursive;  /* Pixel/retro game font */
+            --font-body: 'Quicksand', sans-serif;      /* Easy-to-read body font */
+            --border-glow: 0 0 15px rgba(124, 58, 237, 0.3); /* Glowing border effect */
+        }
+
+        /* ===== RESET & BASE STYLES ===== */
+        /* This removes default browser spacing so we start fresh */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* Makes sizing easier to calculate */
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh; /* vh = viewport height, so at least full screen */
+        }
+
+        /* ===== NAVIGATION BAR ===== */
+        nav {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 15px 30px;
+            display: flex;                /* Flexbox = easy horizontal layout */
+            justify-content: space-between; /* Push logo left, links right */
+            align-items: center;           /* Vertically center everything */
+            border-bottom: 2px solid var(--primary);
+            position: sticky;             /* Stays at top when scrolling */
+            top: 0;
+            z-index: 100;                 /* Stays on top of other content */
+        }
+
+        .logo {
+            font-family: var(--font-pixel);
+            font-size: 14px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;          /* Space between each link */
+            list-style: none;   /* Remove bullet points */
+            flex-wrap: wrap;     /* Wrap to next line on small screens */
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.3s ease; /* Smooth hover animation */
+        }
+
+        .nav-links a:hover {
+            color: var(--text-light);
+            background: var(--bg-card);
+        }
+
+        /* Special style for the "Start Quest" (sign up) button */
+        .nav-links .btn-start {
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+        }
+
+        .nav-links .btn-start:hover {
+            background: var(--primary-light);
+            box-shadow: var(--border-glow);
+        }
+
+        /* ===== HERO SECTION (the big welcome area at the top) ===== */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            /* A gradient background that fades from dark to slightly purple */
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #1a1040 100%);
+            position: relative;
+            overflow: hidden; /* Hides anything that goes outside this box */
+        }
+
+        /* Decorative floating pixels in the background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            box-shadow:
+                60px 30px 0 var(--secondary),
+                120px -20px 0 var(--primary-light),
+                200px 50px 0 var(--accent),
+                -40px 60px 0 var(--secondary),
+                300px -10px 0 var(--primary-light);
+            animation: float 6s ease-in-out infinite; /* Makes them bob up and down */
+        }
+
+        /* The floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-family: var(--font-pixel);
+            font-size: clamp(20px, 4vw, 36px); /* Responsive font size */
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            line-height: 1.6;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.7;
+        }
+
+        /* XP bar decoration under the hero */
+        .xp-bar-container {
+            max-width: 400px;
+            margin: 0 auto 30px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 4px;
+            border: 1px solid var(--primary);
+        }
+
+        .xp-bar {
+            height: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            width: 0%;
+            animation: fillXP 2s ease-out 0.5s forwards; /* Fills up on page load */
+        }
+
+        @keyframes fillXP {
+            to { width: 75%; }
+        }
+
+        .xp-label {
+            font-family: var(--font-pixel);
+            font-size: 10px;
+            color: var(--accent);
+            margin-top: 8px;
+        }
+
+        /* Big call-to-action buttons */
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            box-shadow: var(--border-glow);
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ===== FEATURE CARDS SECTION ===== */
+        .features {
+            padding: 60px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: var(--font-pixel);
+            font-size: 16px;
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        /* CSS Grid for the card layout - like arranging items in your inventory! */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            /* auto-fit = automatically fits cards, minmax = min 280px, max 1 fraction */
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit; /* Inherit = use parent's color */
+            display: block;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--border-glow);
+            transform: translateY(-5px);
+            background: var(--bg-card-hover);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-family: var(--font-pixel);
+            font-size: 12px;
+            color: var(--primary-light);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Small "badge" labels on cards */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .badge-xp {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent);
+        }
+
+        .badge-quest {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--primary-light);
+        }
+
+        .badge-heal {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--secondary);
+        }
+
+        /* ===== TELEHEALTH PARTNERS SECTION ===== */
+        .partners {
+            padding: 60px 20px;
+            background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.05));
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .partner-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .partner-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .partner-card h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .partner-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .partner-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .partner-link:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid var(--bg-card);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        /* Makes things look good on phones */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .hero {
+                padding: 50px 15px 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav>
+        <a href="index.html" class="logo">Health<span>chievements</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">🏠 Home Base</a></li>
+            <li><a href="dashboard.html">📊 Dashboard</a></li>
+            <li><a href="log.html">📝 Quest Log</a></li>
+            <li><a href="history.html">📜 History</a></li>
+            <li><a href="tips.html">💡 Power-Ups</a></li>
+            <li><a href="profile.html">👤 Profile</a></li>
+            <li><a href="log.html" class="btn-start">🎮 Start Quest</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero">
+        <h1>⚔️ Level Up Your Health! ⚔️</h1>
+        <p>
+            Welcome, brave adventurer! Your health journey is an epic quest.
+            Track your stats, earn XP, unlock achievements, and become
+            the ultimate champion of wellness!
+        </p>
+
+        <!-- XP Bar - just decorative on this page -->
+        <div class="xp-bar-container">
+            <div class="xp-bar"></div>
+        </div>
+        <div class="xp-label">HEALTH XP: 750 / 1000</div>
+
+        <!-- Call to action buttons -->
+        <div class="hero-buttons">
+            <a href="log.html" class="btn btn-primary">🎮 Begin Your Quest</a>
+            <a href="dashboard.html" class="btn btn-secondary">📊 View Stats</a>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE CARDS ===== -->
+    <section class="features">
+        <h2 class="section-title">⭐ Choose Your Path ⭐</h2>
+        <p class="section-subtitle">Each area of the game helps you master a different part of your health journey.</p>
+
+        <div class="card-grid">
+
+            <!-- Card 1: Quest Log (Health Data Input) -->
+            <a href="log.html" class="card">
+                <div class="card-icon">📝</div>
+                <h3>Quest Log</h3>
+                <p>
+                    Record your daily health stats — height, weight, BMI, heart rate,
+                    sleep patterns, and menstrual cycle tracking. Every entry earns XP!
+                </p>
+                <span class="badge badge-xp">+50 XP per entry</span>
+            </a>
+
+            <!-- Card 2: Dashboard (Stats Overview) -->
+            <a href="dashboard.html" class="card">
+                <div class="card-icon">📊</div>
+                <h3>Player Dashboard</h3>
+                <p>
+                    View your health stats in one place — like checking your
+                    character sheet! See your current level, progress bars,
+                    and achievements unlocked.
+                </p>
+                <span class="badge badge-quest">Main Quest</span>
+            </a>
+
+            <!-- Card 3: History (Past Records) -->
+            <a href="history.html" class="card">
+                <div class="card-icon">📜</div>
+                <h3>Adventure History</h3>
+                <p>
+                    Look back at your completed quests and see how far you've come.
+                    Track your health journey over time with detailed logs.
+                </p>
+                <span class="badge badge-quest">Side Quest</span>
+            </a>
+
+            <!-- Card 4: Health Tips (Power-Ups) -->
+            <a href="tips.html" class="card">
+                <div class="card-icon">💡</div>
+                <h3>Power-Up Tips</h3>
+                <p>
+                    Get personalised health tips based on your stats.
+                    These power-ups will help boost your health score
+                    and unlock new achievements!
+                </p>
+                <span class="badge badge-heal">+Health Boost</span>
+            </a>
+
+            <!-- Card 5: Profile -->
+            <a href="profile.html" class="card">
+                <div class="card-icon">👤</div>
+                <h3>Hero Profile</h3>
+                <p>
+                    Customise your player profile, set your health goals,
+                    view your achievement badges, and manage your account settings.
+                </p>
+                <span class="badge badge-xp">Character Sheet</span>
+            </a>
+
+            <!-- Card 6: Telehealth -->
+            <a href="#partners" class="card">
+                <div class="card-icon">🏥</div>
+                <h3>Healer's Guild</h3>
+                <p>
+                    Need backup from a real-life healer? Connect with
+                    telemedical services — professional doctors are just
+                    a click away!
+                </p>
+                <span class="badge badge-heal">Alliance Partners</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- ===== TELEHEALTH PARTNERS ===== -->
+    <section class="partners" id="partners">
+        <h2 class="section-title">🏥 Healer's Guild — Alliance Partners 🏥</h2>
+        <p class="section-subtitle">Sometimes you need a real-life healer. Our alliance partners are here to help!</p>
+
+        <div class="partners-grid">
+
+            <div class="partner-card">
+                <h3>🩺 Health Direct</h3>
+                <p>
+                    Australia's trusted health companion. Find health services,
+                    get symptom advice, and connect with professionals near you.
+                </p>
+                <a href="https://www.healthdirect.gov.au/australian-health-services"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="partner-link">
+                    🔗 Visit Health Direct →
+                </a>
+            </div>
+
+            <div class="partner-card">
+                <h3>📱 National Telemedicine Doctors</h3>
+                <p>
+                    Speak to a doctor online from the comfort of your home base.
+                    Fast, convenient, and professional telehealth services.
+                </p>
+                <a href="https://www.nationaltelemedicinedoctors.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="partner-link">
+                    🔗 Visit Telemedicine Doctors →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>
+            ⚔️ Healthchievements © 2026 — Level up your wellness, one quest at a time! ⚔️
+        </p>
+        <p style="margin-top: 8px;">
+            <a href="index.html">Home Base</a> •
+            <a href="log.html">Quest Log</a> •
+            <a href="dashboard.html">Dashboard</a> •
+            <a href="tips.html">Power-Ups</a> •
+            <a href="profile.html">Profile</a>
+        </p>
+    </footer>
+
+</body>
+</html>

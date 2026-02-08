@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthchievements — Power-Up Tips</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: #a78bfa;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-pixel: 'Press Start 2P', cursive;
+            --font-body: 'Quicksand', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-dark); color: var(--text-light); min-height: 100vh; }
+
+        /* Nav */
+        nav { background: rgba(15, 23, 42, 0.95); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: var(--font-pixel); font-size: 14px; color: var(--accent); text-decoration: none; }
+        .logo span { color: var(--secondary); }
+        .nav-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 14px; border-radius: 8px; transition: all 0.3s ease; }
+        .nav-links a:hover { color: var(--text-light); background: var(--bg-card); }
+
+        .page-header { text-align: center; padding: 40px 20px 20px; }
+        .page-header h1 { font-family: var(--font-pixel); font-size: clamp(16px, 3vw, 24px); color: var(--accent); margin-bottom: 10px; }
+        .page-header p { color: var(--text-muted); font-size: 16px; }
+
+        /* Tips container */
+        .tips-container { max-width: 900px; margin: 20px auto 60px; padding: 0 20px; }
+
+        /* Section dividers */
+        .tip-section-title {
+            font-family: var(--font-pixel);
+            font-size: 12px;
+            color: var(--primary-light);
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--bg-card-hover);
+            line-height: 1.8;
+        }
+
+        /* Individual tip card */
+        .tip-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s;
+        }
+
+        .tip-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateX(5px);
+        }
+
+        /* Different border colors for tip types */
+        .tip-card.warning { border-left-color: var(--accent); }
+        .tip-card.alert { border-left-color: var(--danger); }
+        .tip-card.good { border-left-color: var(--secondary); }
+        .tip-card.info { border-left-color: var(--primary-light); }
+
+        .tip-card .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tip-card .tip-icon { font-size: 24px; }
+
+        .tip-card .tip-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .tip-card .tip-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .badge-personal {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent);
+        }
+
+        .badge-general {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--primary-light);
+        }
+
+        .tip-card .tip-body {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* General tips grid */
+        .general-tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+        }
+
+        .general-tip {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .general-tip:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .general-tip .gt-icon { font-size: 36px; margin-bottom: 10px; }
+        .general-tip .gt-title { font-weight: 700; margin-bottom: 8px; color: var(--text-light); }
+        .general-tip .gt-body { color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+            background: var(--bg-card); border-radius: 16px;
+            border: 2px dashed var(--bg-card-hover); margin-bottom: 30px;
+        }
+        .empty-state h2 { font-family: var(--font-pixel); font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.8; }
+        .empty-state a {
+            display: inline-block; margin-top: 10px; padding: 12px 24px;
+            background: var(--primary); color: white; text-decoration: none;
+            border-radius: 10px; font-weight: 700;
+        }
+
+        footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--bg-card); color: var(--text-muted); font-size: 13px; }
+        footer a { color: var(--primary-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; }
+            .nav-links { justify-content: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Health<span>chievements</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">🏠 Home Base</a></li>
+            <li><a href="dashboard.html">📊 Dashboard</a></li>
+            <li><a href="log.html">📝 Quest Log</a></li>
+            <li><a href="history.html">📜 History</a></li>
+            <li><a href="tips.html">💡 Power-Ups</a></li>
+            <li><a href="profile.html">👤 Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1>💡 Power-Up Tips</h1>
+        <p>Personalised health boosts based on your quest data — level up smarter!</p>
+    </div>
+
+    <div class="tips-container" id="tipsContent">
+        <!-- Filled by JavaScript -->
+    </div>
+
+    <footer>
+        <p>⚔️ Healthchievements © 2026 ⚔️</p>
+        <p style="margin-top: 8px;">
+            <a href="index.html">Home Base</a> •
+            <a href="log.html">Quest Log</a> •
+            <a href="dashboard.html">Dashboard</a>
+        </p>
+    </footer>
+
+    <script>
+        // =============================================
+        // PERSONALISED TIP LOGIC
+        // =============================================
+        // This function looks at the user's health data and generates
+        // tips that are SPECIFIC to their numbers. This is the core
+        // "personalisation" feature!
+
+        function generatePersonalTips(questLog) {
+            var tips = []; // We'll build an array of tip objects
+
+            if (questLog.length === 0) {
+                return tips; // No data, no personal tips
+            }
+
+            // Get the latest entry
+            var latest = questLog[questLog.length - 1];
+
+            // --- Calculate averages ---
+            var totalSleep = 0, sleepCount = 0;
+            var totalHR = 0, hrCount = 0;
+
+            for (var i = 0; i < questLog.length; i++) {
+                if (questLog[i].sleepHours) {
+                    totalSleep += parseFloat(questLog[i].sleepHours);
+                    sleepCount++;
+                }
+                if (questLog[i].heartRate) {
+                    totalHR += parseFloat(questLog[i].heartRate);
+                    hrCount++;
+                }
+            }
+
+            var avgSleep = sleepCount > 0 ? totalSleep / sleepCount : null;
+            var avgHR = hrCount > 0 ? totalHR / hrCount : null;
+
+            // ===== BMI TIPS =====
+            if (latest.bmi && latest.bmi !== '--') {
+                var bmi = parseFloat(latest.bmi);
+
+                if (bmi < 18.5) {
+                    tips.push({
+                        type: 'warning',
+                        icon: '🍎',
+                        title: 'Nutrition Power-Up Needed!',
+                        body: 'Your BMI (' + bmi + ') shows you might be underweight. Try adding more nutrient-rich foods to your daily rations — think nuts, avocados, whole grains, and lean proteins. Small, frequent meals can help you gain healthy weight. Consider consulting a healer (doctor) for a personalised nutrition quest!'
+                    });
+                } else if (bmi >= 18.5 && bmi < 25) {
+                    tips.push({
+                        type: 'good',
+                        icon: '🏆',
+                        title: 'BMI — Perfectly Balanced!',
+                        body: 'Amazing work, hero! Your BMI (' + bmi + ') is in the healthy range. Keep up your current eating and exercise habits to maintain this awesome stat. You\'ve unlocked the "Balance Master" achievement in our hearts!'
+                    });
+                } else if (bmi >= 25 && bmi < 30) {
+                    tips.push({
+                        type: 'warning',
+                        icon: '🏃',
+                        title: 'Training Montage Recommended!',
+                        body: 'Your BMI (' + bmi + ') is slightly above the healthy range. Time for a training montage! Try adding 30 minutes of movement to your daily routine — walking, swimming, cycling, or dancing all count. Small changes to portion sizes can also make a big difference on this quest.'
+                    });
+                } else {
+                    tips.push({
+                        type: 'alert',
+                        icon: '⚠️',
+                        title: 'Critical Quest: Weight Management',
+                        body: 'Your BMI (' + bmi + ') is in the obese range. This is a tough boss battle, but you can win! Start with small goals — even a 5% weight reduction brings huge health bonuses. Please consider visiting a healer (doctor) who can create a personalised strategy for your journey.'
+                    });
+                }
+            }
+
+            // ===== SLEEP TIPS =====
+            if (avgSleep !== null) {
+                if (avgSleep < 6) {
+                    tips.push({
+                        type: 'alert',
+                        icon: '😴',
+                        title: 'Critical! Sleep HP is Low!',
+                        body: 'You\'re averaging only ' + avgSleep.toFixed(1) + ' hours of sleep. Your character needs 7-9 hours to fully regenerate! Poor sleep weakens your immune defence, slows down XP gain, and makes boss fights (daily challenges) much harder. Try setting a "lights out" alarm 8 hours before you need to wake up.'
+                    });
+                } else if (avgSleep < 7) {
+                    tips.push({
+                        type: 'warning',
+                        icon: '🛌',
+                        title: 'Sleep Buff Almost There!',
+                        body: 'You\'re getting ' + avgSleep.toFixed(1) + ' hours on average — close to the recommended 7-9 hours! Try going to bed just 30 minutes earlier. Avoid screen time (the blue light debuff!) before bed, and keep your sleeping chamber cool and dark for maximum rest bonus.'
+                    });
+                } else if (avgSleep <= 9) {
+                    tips.push({
+                        type: 'good',
+                        icon: '✨',
+                        title: 'Sleep Master Achievement!',
+                        body: 'Excellent! You\'re averaging ' + avgSleep.toFixed(1) + ' hours of sleep — right in the sweet spot! Quality rest gives you bonus HP regeneration, better focus stats, and stronger immune defence. Keep this up, champion!'
+                    });
+                } else {
+                    tips.push({
+                        type: 'warning',
+                        icon: '⏰',
+                        title: 'Oversleep Warning!',
+                        body: 'You\'re averaging ' + avgSleep.toFixed(1) + ' hours — that\'s more than the recommended 7-9 hours. Too much sleep can actually lower your energy stats! If you\'re feeling constantly tired despite long rest, consider checking with a healer, as it might signal an underlying debuff.'
+                    });
+                }
+            }
+
+            // ===== HEART RATE TIPS =====
+            if (avgHR !== null) {
+                var hr = Math.round(avgHR);
+
+                if (hr < 60) {
+                    tips.push({
+                        type: 'info',
+                        icon: '💓',
+                        title: 'Low Resting Heart Rate',
+                        body: 'Your average heart rate is ' + hr + ' bpm. If you\'re athletic, this could be a sign of great cardiovascular fitness — an S-tier passive ability! However, if you\'re not very active or feel dizzy/tired, it\'s worth mentioning to your healer (doctor).'
+                    });
+                } else if (hr <= 100) {
+                    tips.push({
+                        type: 'good',
+                        icon: '💚',
+                        title: 'Heart Rate — Optimal Zone!',
+                        body: 'Your average heart rate of ' + hr + ' bpm is in the normal resting range (60-100 bpm). Your heart is performing well! Regular cardio exercise (the "Endurance Training" side quest) can help keep it even stronger.'
+                    });
+                } else {
+                    tips.push({
+                        type: 'alert',
+                        icon: '❤️‍🔥',
+                        title: 'Heart Rate Running High!',
+                        body: 'Your average heart rate is ' + hr + ' bpm, which is above the normal resting range. Stress, caffeine, and lack of exercise can cause this. Try deep breathing exercises (the "Meditation" skill), reduce caffeine potions, and add light exercise to your daily routine. If it stays high, please visit a healer!'
+                    });
+                }
+            }
+
+            // ===== MENSTRUAL CYCLE TIPS =====
+            if (latest.cycleTracking) {
+                tips.push({
+                    type: 'info',
+                    icon: '🌸',
+                    title: 'Cycle Tracking Active!',
+                    body: 'Great job tracking your cycle! Regular tracking helps you understand your body\'s patterns and predict changes in energy, mood, and physical performance. During your period, your iron levels may drop — combat this with iron-rich foods like spinach, red meat, or fortified cereals (HP restoration items!).'
+                });
+
+                if (latest.cycleLength && (latest.cycleLength < 21 || latest.cycleLength > 35)) {
+                    tips.push({
+                        type: 'warning',
+                        icon: '📊',
+                        title: 'Cycle Length — Worth Checking',
+                        body: 'Your recorded cycle length of ' + latest.cycleLength + ' days is outside the typical 21-35 day range. This isn\'t always a problem (everyone\'s different!), but if it\'s consistently irregular, it\'s a good idea to chat with a healer (doctor) about it. They can check for any hidden debuffs.'
+                    });
+                }
+            }
+
+            // ===== CONSISTENCY TIP =====
+            if (questLog.length >= 3) {
+                tips.push({
+                    type: 'good',
+                    icon: '🔥',
+                    title: 'Streak Bonus Active!',
+                    body: 'You\'ve logged ' + questLog.length + ' quests so far — consistency is the most powerful buff in the game! Regular tracking helps you spot trends, catch problems early, and see your progress over time. Keep logging to unlock more achievements!'
+                });
+            }
+
+            return tips;
+        }
+
+
+        // =============================================
+        // GENERAL TIPS (shown to everyone)
+        // =============================================
+        var generalTips = [
+            {
+                icon: '💧',
+                title: 'Hydration Potion',
+                body: 'Drink at least 8 glasses of water daily. Dehydration is a sneaky debuff that lowers energy, focus, and physical performance!'
+            },
+            {
+                icon: '🥦',
+                title: 'Eat the Rainbow',
+                body: 'Fill your plate with colourful fruits and vegetables. Each colour gives different stat boosts — vitamins, minerals, and antioxidants!'
+            },
+            {
+                icon: '🚶',
+                title: '10K Steps Quest',
+                body: 'Aim for 10,000 steps a day. Walking is the easiest grind in the game — it boosts mood, burns calories, and strengthens your heart.'
+            },
+            {
+                icon: '🧘',
+                title: 'Meditation Skill',
+                body: 'Even 5 minutes of deep breathing or mindfulness can reduce stress, improve focus, and lower your heart rate. A powerful passive ability!'
+            },
+            {
+                icon: '📵',
+                title: 'Screen Break Buff',
+                body: 'Every 20 minutes, look at something 20 feet away for 20 seconds (the 20-20-20 rule). Protects your eye stats from screen damage!'
+            },
+            {
+                icon: '🏋️',
+                title: 'Strength Training',
+                body: 'Include strength exercises 2-3 times per week. Building muscle boosts metabolism, protects joints, and increases your base power stat!'
+            }
+        ];
+
+
+        // =============================================
+        // BUILD THE PAGE
+        // =============================================
+        function loadTips() {
+            var container = document.getElementById('tipsContent');
+            var data = localStorage.getItem('healthQuestLog');
+            var questLog = data ? JSON.parse(data) : [];
+
+            var html = '';
+
+            // --- Personal Tips ---
+            var personalTips = generatePersonalTips(questLog);
+
+            if (personalTips.length > 0) {
+                html += '<h2 class="tip-section-title">⚡ Your Personal Power-Ups</h2>';
+
+                for (var i = 0; i < personalTips.length; i++) {
+                    var tip = personalTips[i];
+                    html += `
+                        <div class="tip-card ${tip.type}">
+                            <div class="tip-header">
+                                <span class="tip-icon">${tip.icon}</span>
+                                <span class="tip-title">${tip.title}</span>
+                                <span class="tip-badge badge-personal">⚡ Personal</span>
+                            </div>
+                            <div class="tip-body">${tip.body}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                html += `
+                    <div class="empty-state">
+                        <div style="font-size: 40px; margin-bottom: 10px;">⚡</div>
+                        <h2>No Personal Tips Yet!</h2>
+                        <p style="color: var(--text-muted);">
+                            Log your first health quest to get personalised power-up tips based on YOUR stats!
+                        </p>
+                        <a href="log.html">📝 Log Your First Quest</a>
+                    </div>
+                `;
+            }
+
+            // --- General Tips ---
+            html += '<h2 class="tip-section-title">📚 General Power-Up Guide</h2>';
+            html += '<div class="general-tips-grid">';
+
+            for (var g = 0; g < generalTips.length; g++) {
+                var gt = generalTips[g];
+                html += `
+                    <div class="general-tip">
+                        <div class="gt-icon">${gt.icon}</div>
+                        <div class="gt-title">${gt.title}</div>
+                        <div class="gt-body">${gt.body}</div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+
+            // --- Link to Healers ---
+            html += `
+                <h2 class="tip-section-title">🏥 Need a Real Healer?</h2>
+                <div class="tip-card info">
+                    <div class="tip-header">
+                        <span class="tip-icon">🩺</span>
+                        <span class="tip-title">Visit the Healer's Guild</span>
+                    </div>
+                    <div class="tip-body">
+                        These tips are general guidance — for personalised medical advice, always consult a professional healer (doctor)!
+                        Visit our alliance partners:
+                        <a href="https://www.healthdirect.gov.au/australian-health-services" target="_blank" style="color: var(--secondary);">Health Direct</a> or
+                        <a href="https://www.nationaltelemedicinedoctors.com/" target="_blank" style="color: var(--secondary);">National Telemedicine Doctors</a>.
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Run on page load
+        loadTips();
+    </script>
+
+</body>
+</html>
